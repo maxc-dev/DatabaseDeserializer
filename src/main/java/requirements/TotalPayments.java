@@ -1,11 +1,8 @@
 package requirements;
 
-import java.util.List;
-
-import io.DBConnector;
+import io.DBUtils;
+import io.Deserializer;
 import models.Payment;
-import models.serial.IllegalModifierException;
-import util.sql.Table;
 
 /**
  * @author Max Carter
@@ -13,21 +10,24 @@ import util.sql.Table;
  */
 @Requirement(code = 'C', position = 1, desc = "Report total payments for October 28, 2004.")
 public class TotalPayments implements ExecutableRequirement {
-    private DBConnector dbConnector;
+    private static final String SQL_DATE = "2004-10-28";
 
-    /**
-     * Creates a new TotalPayments object for requirement C:1
-     */
-    public TotalPayments(DBConnector dbConnector) {
-        this.dbConnector = dbConnector;
+    private Payment[] payments;
+
+    public TotalPayments(Payment[] payments) {
+        this.payments = payments;
     }
 
     @Override
-    public void execute() {
-        try {
-            List<Payment> payments = dbConnector.deserialize(new Payment(), Table.PAYMENTS);
-        } catch (IllegalModifierException ex) {
-            ex.printStackTrace();
+    public Object execute(Deserializer deserializer, DBUtils dbUtils) {
+        //loop through all payments
+        int paymentCount = 0;
+        for (Payment payment : payments) {
+            //if payment date as lazy string equals SQL_DATE, increase payment counter
+            if (payment.paymentDate.toString().startsWith(SQL_DATE)) {
+                paymentCount += payment.amount;
+            }
         }
+        return paymentCount;
     }
 }

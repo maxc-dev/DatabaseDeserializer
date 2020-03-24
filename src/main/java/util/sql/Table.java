@@ -6,9 +6,10 @@ package util.sql;
  */
 public enum Table {
     PAYMENTS("payments"),
-    CUSTOMERS("customers");
+    CUSTOMERS("customers"),
+    PRODUCTS("products");
 
-    private String tableName = "";
+    private String tableName;
 
     Table(String tableName) {
         this.tableName = tableName;

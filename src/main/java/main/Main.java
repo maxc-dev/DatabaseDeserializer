@@ -1,10 +1,19 @@
 package main;
 
 import io.DBConnector;
+import io.DBProcessor;
+import io.DBUtils;
+import io.Deserializer;
+import models.Customer;
+import models.Payment;
+import models.Product;
+import models.serial.IllegalModifierException;
 import requirements.CustomerPayments;
 import requirements.ExecutableRequirement;
 import requirements.ProductMSRP;
 import requirements.TotalPayments;
+import util.sql.InconsistentTableSizeException;
+import util.sql.Table;
 
 /**
  * @author Max Carter
@@ -14,22 +23,30 @@ public class Main {
     private void run() {
         //creates a new database connector
         DBConnector dbConnector = new DBConnector();
-        if (!dbConnector.connect()) {
-            //exit system if the database cannot connect
-            return;
+        DBProcessor dbProcessor = dbConnector.connect();
+        DBUtils dbUtils = new DBUtils(dbProcessor);
+        Deserializer deserializer = new Deserializer(dbProcessor, dbUtils);
+
+        //creating pre-generic-object-populated arrays
+        Payment[] payments = Payment.asList(dbUtils.getTableSize(Table.PAYMENTS));
+        Customer[] customers = Customer.asList(dbUtils.getTableSize(Table.CUSTOMERS));
+        Product[] products = Product.asList(dbUtils.getTableSize(Table.PRODUCTS));
+
+        //deserialize data from database into the arrays
+        try {
+            payments = deserializer.deserializeList(payments, Table.PAYMENTS);
+            customers = deserializer.deserializeList(customers, Table.CUSTOMERS);
+            products = deserializer.deserializeList(products, Table.PRODUCTS);
+        } catch (IllegalModifierException | InconsistentTableSizeException ex) {
+            ex.printStackTrace();
         }
 
-        //requirement C:1
-        ExecutableRequirement totalPayments = new TotalPayments(dbConnector);
-        totalPayments.execute();
-
-        //requirement C:2
-        ExecutableRequirement customerPayments = new CustomerPayments(dbConnector);
-        customerPayments.execute();
-
-        //requirement C:3
-        ExecutableRequirement productMSRP = new ProductMSRP(dbConnector);
-        productMSRP.execute();
+        //initiates all requirements and executes them
+        for (ExecutableRequirement requirement : new ExecutableRequirement[]{
+                new TotalPayments(payments), new CustomerPayments(payments, customers), new ProductMSRP(products)
+        }) {
+            requirement.execute(deserializer, dbUtils);
+        }
     }
 
     public static void main(String[] args) {

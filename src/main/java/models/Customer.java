@@ -1,6 +1,6 @@
 package models;
 
-import models.serial.Serializable;
+import models.serial.Deserializable;
 
 /**
  * @author Max Carter
@@ -12,12 +12,13 @@ public class Customer {
      */
     public static final int NO_CUSTOMER_ID = -1;
 
-    @Serializable
+    @Deserializable
     public int customerNumber = NO_CUSTOMER_ID, salesRepEmployeeNumber;
-    @Serializable
+
+    @Deserializable
     public double creditLimit = 0;
 
-    @Serializable
+    @Deserializable
     public String customerName = null,
             contactLastName = null,
             contactFirstName = null,
@@ -29,28 +30,15 @@ public class Customer {
             postalCode = null,
             country = null;
 
-    /**
-     * Generates empty customer
-     */
-    public Customer() {}
+    @Deserializable
+    public Object customerLocation = null;
 
-    /**
-     * Generates a customer with non empty fields
-     */
-    public Customer(int customerNumber, int salesRepEmployeeNumber, double creditLimit, String customerName, String contactLastName, String contactFirstName, String phone, String addressLine1, String addressLine2, String city, String state, String postalCOde, String country) {
-        this.customerNumber = customerNumber;
-        this.salesRepEmployeeNumber = salesRepEmployeeNumber;
-        this.creditLimit = creditLimit;
-        this.customerName = customerName;
-        this.contactLastName = contactLastName;
-        this.contactFirstName = contactFirstName;
-        this.phone = phone;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.city = city;
-        this.state = state;
-        this.postalCode = postalCOde;
-        this.country = country;
+    public static Customer[] asList(int size) {
+        Customer[] customers = new Customer[size];
+
+        for (int i = 0; i < customers.length; i++) {
+            customers[i] = new Customer();
+        }
+        return customers;
     }
-
 }

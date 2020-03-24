@@ -1,11 +1,12 @@
 package requirements;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.DBConnector;
+import io.DBUtils;
+import io.Deserializer;
 import models.Customer;
-import models.serial.IllegalModifierException;
-import util.sql.Table;
+import models.Payment;
 
 /**
  * @author Max Carter
@@ -13,28 +14,34 @@ import util.sql.Table;
  */
 @Requirement(code = 'C', position = 2, desc = "List the amount paid by each customer.")
 public class CustomerPayments implements ExecutableRequirement {
-    private DBConnector dbConnector;
+    private Payment[] payments;
+    private Customer[] customers;
 
-    /**
-     * Creates a new CustomerPayments object for requirement C:2
-     */
-    public CustomerPayments(DBConnector dbConnector) {
-        this.dbConnector = dbConnector;
+    public CustomerPayments(Payment[] payments, Customer[] customers) {
+        this.payments = payments;
+        this.customers = customers;
     }
 
     @Override
-    public void execute() {
-        List<Customer> customers = null;
-        try {
-            customers = dbConnector.deserialize(new Customer(), Table.CUSTOMERS);
-        } catch (IllegalModifierException ex) {
-            ex.printStackTrace();
-        }
-        if (customers == null) {
-            return;
-        }
+    public Object execute(Deserializer deserializer, DBUtils dbUtils) {
+        Map<Customer, Double> crossCustomerPaymentMap = new HashMap<>();
+
+        //loops through all customers and payments
         for (Customer customer : customers) {
-            //TODO("cross examine against payments")
+            for (Payment payment : payments) {
+                //if the customer number == payments customer number
+                if (customer.customerNumber == payment.customerNumber) {
+                    //if customer is unique add to hash map, if not update keys value
+                    if (!crossCustomerPaymentMap.containsKey(customer)) {
+                        crossCustomerPaymentMap.put(customer, payment.amount);
+                    } else {
+                        crossCustomerPaymentMap.put(customer, (crossCustomerPaymentMap.get(customer) + payment.amount));
+                    }
+                }
+            }
         }
+
+        //returns a map of each customer -> total payment
+        return crossCustomerPaymentMap;
     }
 }

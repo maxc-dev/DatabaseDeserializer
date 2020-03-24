@@ -1,39 +1,32 @@
 package models;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
-import models.serial.Serializable;
+import models.serial.Deserializable;
 
 /**
  * @author Max Carter
  * @since 19/03/2020
  */
 public class Payment {
-    @Serializable
-    public int customerNumber = Customer.NO_CUSTOMER_ID, checkNumber = -1;
+    @Deserializable
+    public int customerNumber = Customer.NO_CUSTOMER_ID;
 
-    @Serializable
-    public Date paymentDate = null;
+    @Deserializable
+    public String checkNumber = null;
 
-    @Serializable
+    @Deserializable
+    public Timestamp paymentDate = null;
+
+    @Deserializable
     public double amount = 0;
 
-    /**
-     * Generates empty payment
-     */
-    public Payment() {}
+    public static Payment[] asList(int size) {
+        Payment[] payments = new Payment[size];
 
-    /**
-     *
-     * @param customerNumber Reference to the customer ID
-     * @param checkNumber Check number of payment
-     * @param paymentDate Date of payment transaction
-     * @param amount The amount procesed in the payment
-     */
-    public Payment(int customerNumber, int checkNumber, Date paymentDate, double amount) {
-        this.customerNumber = customerNumber;
-        this.checkNumber = checkNumber;
-        this.paymentDate = paymentDate;
-        this.amount = amount;
+        for (int i = 0; i < payments.length; i++) {
+            payments[i] = new Payment();
+        }
+        return payments;
     }
 }

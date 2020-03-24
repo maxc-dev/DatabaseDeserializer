@@ -1,6 +1,11 @@
 package requirements;
 
-import io.DBConnector;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.DBUtils;
+import io.Deserializer;
+import models.Product;
 
 /**
  * @author Max Carter
@@ -8,17 +13,25 @@ import io.DBConnector;
  */
 @Requirement(code = 'C', position = 3, desc = "List the names of products sold at less than 80% of the MSRP.")
 public class ProductMSRP implements ExecutableRequirement {
-    private DBConnector dbConnector;
+    protected static final double PRODUCT_LIST_MSRP_THRESHOLD = 0.8;
 
-    /**
-     * Creates a new ProductMSRP object for requirement C:3
-     */
-    public ProductMSRP(DBConnector dbConnector) {
-        this.dbConnector = dbConnector;
+    private Product[] products;
+
+    public ProductMSRP(Product[] products) {
+        this.products = products;
     }
 
     @Override
-    public void execute() {
+    public Object execute(Deserializer deserializer, DBUtils dbUtils) {
+        List<String> eligibleProducts = new ArrayList<>();
 
+        //loop through all products and check if the price is 80% less than the MSRP
+        for (Product product : products) {
+            if (product.buyPrice < product.MSRP * PRODUCT_LIST_MSRP_THRESHOLD) {
+                eligibleProducts.add(product.productName);
+            }
+        }
+
+        return eligibleProducts;
     }
 }
