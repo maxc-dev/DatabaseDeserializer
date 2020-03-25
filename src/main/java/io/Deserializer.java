@@ -26,19 +26,29 @@ public class Deserializer {
     }
 
     /**
+     * Calls deserializeList without an appending clause.
+     */
+    public <T> T[] deserializeList(T[] results, Table table) throws IllegalModifierException, InconsistentTableSizeException {
+        return deserializeList(results, table, "");
+    }
+
+    /**
      * Requires a pre-populated array of an object, then it returns
      * the same array with parsed data from the specified table.
      *
      * @param results Class reference for deserializer
      * @param table   Name of the SQL table
+     * @param clause  An additional clause to the sql statement
      * @param <T>     List return results
      * @return List of objects belonging to T
-     * @throws IllegalModifierException If one of the Serial fields of T is not public
+     * @throws IllegalModifierException       If one of the Serial fields of T is not public
+     * @throws InconsistentTableSizeException When the size of the results is inconsistent
+     *                                        with the size of the table
      */
-    public <T> T[] deserializeList(T[] results, Table table) throws IllegalModifierException, InconsistentTableSizeException {
+    public <T> T[] deserializeList(T[] results, Table table, String clause) throws IllegalModifierException, InconsistentTableSizeException {
         ResultSet rs;
         try {
-            rs = dbProcessor.getData(SQLBuilder.getAllFromTable(table));
+            rs = dbProcessor.getData(SQLBuilder.getAllFromTable(table) + " " + clause);
             ResultSetMetaData metaData = rs.getMetaData();
             int rowCount = 0;
             while (rs.next()) {
@@ -62,7 +72,7 @@ public class Deserializer {
                 rowCount++;
             }
             //this is usually resulted by referring the wrong util.sql.Table when populating the list
-            if (rowCount < results.length-1) {
+            if (rowCount < results.length - 1) {
                 throw new InconsistentTableSizeException(results.length, dbUtils.getTableSize(table));
             }
             return results;

@@ -20,6 +20,9 @@ import util.sql.Table;
  * @since 19/03/2020
  */
 public class Main {
+    /**
+     * Demo method that runs all the requirements.
+     */
     private void run() {
         //creates a new database connector
         DBConnector dbConnector = new DBConnector();

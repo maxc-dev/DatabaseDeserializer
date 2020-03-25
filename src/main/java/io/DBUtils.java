@@ -24,13 +24,14 @@ public class DBUtils {
      * of the last row.
      *
      * @param table Table to use.
+     * @param modifier Appending clause to the SQL statement
      * @return Size of a table. if <code>SQLUtil.ERROR_CODE</code>
      * is returned then there has been an internal SQL error.
      */
-    public int getTableSize(Table table) {
+    public int getTableSize(Table table, String modifier) {
         ResultSet rs;
         try {
-            rs = dbProcessor.getData(SQLBuilder.getAllFromTable(table));
+            rs = getResultSetFromStatement(SQLBuilder.getAllFromTable(table) + " " + modifier);
             rs.last();
             return rs.getRow();
         } catch (SQLException ex) {
@@ -38,5 +39,26 @@ public class DBUtils {
         }
         //default sql error code return
         return SQLUtils.ERROR_CODE;
+    }
+
+    /**
+     * Gets the suze of an SQL table without an appending modifier.
+     */
+    public int getTableSize(Table table) {
+        return getTableSize(table, "");
+    }
+
+    public ResultSet getCustomTableContents(Table table, String custom) {
+        return getResultSetFromStatement(table.toString() + " " + custom);
+    }
+
+    private ResultSet getResultSetFromStatement(String custom) {
+        ResultSet rs = null;
+        try {
+            rs = dbProcessor.getData(custom);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return rs;
     }
 }

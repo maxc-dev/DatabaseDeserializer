@@ -13,7 +13,7 @@ import models.Payment;
  * @since 19/03/2020
  */
 @Requirement(code = 'C', position = 2, desc = "List the amount paid by each customer.")
-public class CustomerPayments implements ExecutableRequirement {
+public class CustomerPayments implements ExecutableRequirement<Map<String, Double>> {
     private Payment[] payments;
     private Customer[] customers;
 
@@ -23,8 +23,8 @@ public class CustomerPayments implements ExecutableRequirement {
     }
 
     @Override
-    public Object execute(Deserializer deserializer, DBUtils dbUtils) {
-        Map<Customer, Double> crossCustomerPaymentMap = new HashMap<>();
+    public Map<String, Double> execute(Deserializer deserializer, DBUtils dbUtils) {
+        Map<String, Double> crossCustomerPaymentMap = new HashMap<>();
 
         //loops through all customers and payments
         for (Customer customer : customers) {
@@ -32,10 +32,10 @@ public class CustomerPayments implements ExecutableRequirement {
                 //if the customer number == payments customer number
                 if (customer.customerNumber == payment.customerNumber) {
                     //if customer is unique add to hash map, if not update keys value
-                    if (!crossCustomerPaymentMap.containsKey(customer)) {
-                        crossCustomerPaymentMap.put(customer, payment.amount);
+                    if (!crossCustomerPaymentMap.containsKey(customer.customerName)) {
+                        crossCustomerPaymentMap.put(customer.customerName, payment.amount);
                     } else {
-                        crossCustomerPaymentMap.put(customer, (crossCustomerPaymentMap.get(customer) + payment.amount));
+                        crossCustomerPaymentMap.put(customer.customerName, (crossCustomerPaymentMap.get(customer.customerName) + payment.amount));
                     }
                 }
             }

@@ -2,6 +2,7 @@
   <dictionary name="merca">
     <words>
       <w>classicmodels</w>
+      <w>deserialized</w>
       <w>jdbc</w>
       <w>msrp</w>
       <w>turguesc</w>
