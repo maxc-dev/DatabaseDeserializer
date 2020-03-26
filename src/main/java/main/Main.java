@@ -5,6 +5,7 @@ import io.DBProcessor;
 import io.DBUtils;
 import io.Deserializer;
 import models.Customer;
+import models.OrderDetail;
 import models.Payment;
 import models.Product;
 import models.serial.IllegalModifierException;
@@ -34,19 +35,21 @@ public class Main {
         Payment[] payments = Payment.asList(dbUtils.getTableSize(Table.PAYMENTS));
         Customer[] customers = Customer.asList(dbUtils.getTableSize(Table.CUSTOMERS));
         Product[] products = Product.asList(dbUtils.getTableSize(Table.PRODUCTS));
+        OrderDetail[] orderDetails = OrderDetail.asList(dbUtils.getTableSize(Table.ORDER_DETAILS));
 
         //deserialize data from database into the arrays
         try {
             payments = deserializer.deserializeList(payments, Table.PAYMENTS);
             customers = deserializer.deserializeList(customers, Table.CUSTOMERS);
             products = deserializer.deserializeList(products, Table.PRODUCTS);
+            orderDetails = deserializer.deserializeList(orderDetails, Table.ORDER_DETAILS);
         } catch (IllegalModifierException | InconsistentTableSizeException ex) {
             ex.printStackTrace();
         }
 
         //initiates all requirements and executes them
         for (ExecutableRequirement requirement : new ExecutableRequirement[]{
-                new TotalPayments(payments), new CustomerPayments(payments, customers), new ProductMSRP(products)
+                new TotalPayments(payments), new CustomerPayments(payments, customers), new ProductMSRP(products, orderDetails)
         }) {
             requirement.execute(deserializer, dbUtils);
         }

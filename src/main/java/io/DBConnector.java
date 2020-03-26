@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * @since 19/03/2020
  */
 public class DBConnector {
-    private static final String HOST = "jdbc:mysql://localhost:3306/classicmodels", USERNAME = "root", PASSWORD = "pnQqTURGUESC";
+    private static final String HOST = "jdbc:mysql://localhost:3306/classicmodels", USERNAME = "root", PASSWORD = "";
 
     private Connection connection = null;
 

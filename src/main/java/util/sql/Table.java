@@ -7,7 +7,8 @@ package util.sql;
 public enum Table {
     PAYMENTS("payments"),
     CUSTOMERS("customers"),
-    PRODUCTS("products");
+    PRODUCTS("products"),
+    ORDER_DETAILS("orderdetails");
 
     private String tableName;
 
