@@ -42,14 +42,10 @@ public class DBUtils {
     }
 
     /**
-     * Gets the suze of an SQL table without an appending modifier.
+     * Gets the size of an SQL table without an appending modifier.
      */
     public int getTableSize(Table table) {
         return getTableSize(table, "");
-    }
-
-    public ResultSet getCustomTableContents(Table table, String custom) {
-        return getResultSetFromStatement(table.toString() + " " + custom);
     }
 
     private ResultSet getResultSetFromStatement(String custom) {

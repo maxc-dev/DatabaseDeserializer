@@ -14,12 +14,6 @@ public class DBConnector {
     private Connection connection = null;
 
     /**
-     * Creates the database connector.
-     */
-    public DBConnector() {
-    }
-
-    /**
      * Attempts to establish a connection to the database
      *
      * @return False by default or in the case of an exception.

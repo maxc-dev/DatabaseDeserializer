@@ -31,7 +31,7 @@ public class CustomerPayments implements ExecutableRequirement<Map<String, Doubl
             for (Payment payment : payments) {
                 //if the customer number == payments customer number
                 if (customer.customerNumber == payment.customerNumber) {
-                    //if customer is unique add to hash map, if not update keys value
+                    //if the customer is unique add to hash map, if not update keys value
                     if (!crossCustomerPaymentMap.containsKey(customer.customerName)) {
                         crossCustomerPaymentMap.put(customer.customerName, payment.amount);
                     } else {
