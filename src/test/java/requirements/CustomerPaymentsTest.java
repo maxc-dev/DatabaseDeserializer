@@ -24,9 +24,16 @@ public class CustomerPaymentsTest {
     public void execute() {
         //init database connection
         DBConnector dbConnector = new DBConnector();
+        assertNotEquals(dbConnector, null);
+
         DBProcessor dbProcessor = dbConnector.connect();
+        assertNotEquals(dbProcessor, null);
+
         DBUtils dbUtils = new DBUtils(dbProcessor);
+        assertNotEquals(dbUtils, null);
+
         Deserializer deserializer = new Deserializer(dbProcessor, dbUtils);
+        assertNotEquals(deserializer, null);
 
         final String clause = " JOIN `customers` WHERE `payments`.`customerNumber` = `customers`.`customerNumber`";
 

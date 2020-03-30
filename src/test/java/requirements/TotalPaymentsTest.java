@@ -22,9 +22,16 @@ public class TotalPaymentsTest {
     public void testExecute() {
         //init database connection
         DBConnector dbConnector = new DBConnector();
+        assertNotEquals(dbConnector, null);
+
         DBProcessor dbProcessor = dbConnector.connect();
+        assertNotEquals(dbProcessor, null);
+
         DBUtils dbUtils = new DBUtils(dbProcessor);
+        assertNotEquals(dbUtils, null);
+
         Deserializer deserializer = new Deserializer(dbProcessor, dbUtils);
+        assertNotEquals(deserializer, null);
 
         final String clause = "WHERE paymentDate = \"2004-10-28\"";
 

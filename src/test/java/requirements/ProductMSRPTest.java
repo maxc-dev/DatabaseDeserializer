@@ -24,9 +24,16 @@ public class ProductMSRPTest {
     public void execute() {
         //init database connection
         DBConnector dbConnector = new DBConnector();
+        assertNotEquals(dbConnector, null);
+
         DBProcessor dbProcessor = dbConnector.connect();
+        assertNotEquals(dbProcessor, null);
+
         DBUtils dbUtils = new DBUtils(dbProcessor);
+        assertNotEquals(dbUtils, null);
+
         Deserializer deserializer = new Deserializer(dbProcessor, dbUtils);
+        assertNotEquals(deserializer, null);
 
         final String clause = "JOIN products ON products.productCode = orderdetails.productCode WHERE priceEach < MSRP*0.8";
 
